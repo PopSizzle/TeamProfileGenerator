@@ -47,7 +47,7 @@ Here is an example of the code which will check if there is already a manager on
 
 Here is a team page that was built using this app:
 
-![Site](Assets/Screenshot (45).png)
+![](../Assets/Screenshot (45).png)
 
 ## Languages Used
 
