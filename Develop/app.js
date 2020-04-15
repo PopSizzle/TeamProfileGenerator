@@ -12,17 +12,19 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-
+// Welcome message
 function beginTeam () {
 
     console.log("Welcome to the team creator!")
     console.log("We will now begin to construct your team profile");
     console.log("------------------------------------------")
 
-    enterTeam();
+    enterTeamMember();
 }
 
-function enterTeam() {
+// Function for adding a team member
+function enterTeamMember() {
+    // Inquirer prompt for basic details
     inquirer.prompt([
         {
             type: "list",
@@ -51,16 +53,9 @@ function enterTeam() {
         }
     ])
     .then(function(response) {
-
-        let employee = {
-            role: response.role,
-            name: response.name,
-            id: response.id,
-            email: response.email
-        }
-
+        // Switch case for different classes of employees
         switch(response.role) {
-
+        // If manager class
         case "Manager":
             inquirer.prompt([
                 {
@@ -69,10 +64,13 @@ function enterTeam() {
                     name: "officeNumber"
                 }
             ])
-            .then(function(response){
-                employee.officeNumber = response.officeNumber;
+            .then(function(response1){
+                response.officeNumber = response1.officeNumber;
+                console.log(response);
+                nextStep();
             })
             break;
+        // If Engineer class
         case "Engineer":
             inquirer.prompt([
                 {
@@ -81,10 +79,13 @@ function enterTeam() {
                     name: "github"
                 }
             ])
-            .then(function(response){
-                employee.github = response.github;
+            .then(function(response1){
+                response.github = response1.github;
+                console.log(response);
+                nextStep();
             })
             break;
+        // If neither, must be intern class
         default:
             inquirer.prompt([
                 {
@@ -93,16 +94,46 @@ function enterTeam() {
                     name: "school"
                 }
             ])
-            .then(function(response){
-                employee.school = response.school;
+            .then(function(response1){
+                response.school = response1.school;
+                console.log(response);
+                nextStep();
             })
+        }        
+    })    
+}
+
+// Function for switching between adding team members, printing team, and exiting.
+function nextStep() {
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "what would you like to do now?",
+            name: "continue",
+            choices: [
+                "Add another employee",
+                "Print my team to an html file",
+                "Exit"
+            ]
+
         }
-
-        console.log(employee);
-    }   
-    )
-
-    enterTeam();
+    ])
+    .then(function(response){
+        // Switch case to handle inquirer response
+        switch(response.continue) {
+            // Add another employee
+            case "Add another employee":
+                enterTeamMember();
+                break;
+            // Print the team
+            case "Print my team to an html file":
+                // PrintTeam()
+                break;
+            // Exit the app
+            default:
+                return;
+        }
+    })
 }
 
 beginTeam();
