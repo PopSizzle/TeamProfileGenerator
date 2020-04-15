@@ -4,7 +4,6 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
-let manager = {};
 let employees = [];
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
@@ -27,16 +26,6 @@ function enterTeamMember() {
     // Inquirer prompt for basic details
     inquirer.prompt([
         {
-            type: "list",
-            message: "Please select an employee role to add.",
-            name: "role",
-            choices: [
-                "Manager",
-                "Engineer",
-                "Intern",
-            ]
-        },
-        {
             type: "input",
             message: "Please enter the name of your employee.",
             name: "name"
@@ -50,6 +39,16 @@ function enterTeamMember() {
             type: "input",
             message: "Please enter the email of your employee.",
             name: "email"
+        },
+        {
+            type: "list",
+            message: "Please select this employee's role on your.",
+            name: "role",
+            choices: [
+                "Manager",
+                "Engineer",
+                "Intern",
+            ]
         }
     ])
     .then(function(response) {
@@ -57,6 +56,17 @@ function enterTeamMember() {
         switch(response.role) {
         // If manager class
         case "Manager":
+
+            // Check if there is already a manager
+            let isManager = employees.filter(employee => employee.getRole() === "Manager");
+            console.log(isManager);
+            console.log(isManager.length);
+            // If there is a manager go back and try again
+            if(isManager.length > 0){
+            console.log("Your team already has a manager, please go back and select a different option.")
+            return nextStep();
+            }
+
             inquirer.prompt([
                 {
                     type: "input",
@@ -67,6 +77,8 @@ function enterTeamMember() {
             .then(function(response1){
                 response.officeNumber = response1.officeNumber;
                 console.log(response);
+                const manager = new Manager(response.name, response.id, response.email, response.officeNumber);
+                employees.push(manager);
                 nextStep();
             })
             break;
@@ -82,6 +94,8 @@ function enterTeamMember() {
             .then(function(response1){
                 response.github = response1.github;
                 console.log(response);
+                const engineer = new Engineer(response.name, response.id, response.email, response.github);
+                employees.push(engineer);
                 nextStep();
             })
             break;
@@ -97,6 +111,8 @@ function enterTeamMember() {
             .then(function(response1){
                 response.school = response1.school;
                 console.log(response);
+                const intern = new Intern(response.name, response.id, response.email, response.school);
+                employees.push(intern);
                 nextStep();
             })
         }        
@@ -127,7 +143,10 @@ function nextStep() {
                 break;
             // Print the team
             case "Print my team to an html file":
-                // PrintTeam()
+                
+                console.log(employees);
+                render();
+                console.log("Team successfully rendered!");
                 break;
             // Exit the app
             default:
