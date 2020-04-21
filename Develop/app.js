@@ -42,7 +42,7 @@ function enterTeamMember() {
         },
         {
             type: "list",
-            message: "Please select this employee's role on your.",
+            message: "Please select this employee's role on your team.",
             name: "role",
             choices: [
                 "Manager",
